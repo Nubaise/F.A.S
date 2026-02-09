@@ -10,6 +10,10 @@ export default function ViewFacultyAppointments() {
   // Hardcoded for now (as per current UI)
   const appointmentMode = "Virtual Meeting";
 
+  // New fields for extra feature
+  const isRecurring = true; // true if appointment is recurring
+  const isGroupAppointment = false; // true if it's a group appointment
+
   const generateMeetLink = () => {
     const randomCode = Math.random().toString(36).substring(2, 12);
     return `https://meet.google.com/${randomCode}`;
@@ -76,6 +80,20 @@ export default function ViewFacultyAppointments() {
           <Detail label="Student" value="Ananya Sharma" />
           <Detail label="Date & Time" value="12 Feb 2026 · 10:30 AM" />
           <Detail label="Mode" value={appointmentMode} />
+
+          {/* New badges for extra features */}
+          <div className="flex gap-2">
+            {isRecurring && (
+              <span className="px-2 py-0.5 rounded-full bg-[#4A6FA5]/10 text-[#4A6FA5] text-sm font-medium">
+                Recurring
+              </span>
+            )}
+            {isGroupAppointment && (
+              <span className="px-2 py-0.5 rounded-full bg-[#4A6FA5]/10 text-[#4A6FA5] text-sm font-medium">
+                Group Appointment
+              </span>
+            )}
+          </div>
 
           <div className="flex justify-between text-[16px]">
             <span className="text-gray-500">Status</span>
