@@ -1,41 +1,16 @@
 "use client"
+import Link from "next/link";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import BackArrowButton from "@/components/BackArrowButton";
+import { facultyProfiles } from "./facultyData";
 
 export default function SearchFaculty() {
-  const facultyList = [
-    {
-      name: "Dr. Ananya Rao",
-      role: "Professor",
-      status: "Available",
-      courses: "Data Structures, Algorithms, Operating Systems",
-      location: "Block A · Room 302",
-      color: "green",
-    },
-    {
-      name: "Mr. Karthik Menon",
-      role: "Assistant Professor",
-      status: "Busy",
-      courses: "Database Systems, Web Technologies",
-      location: "Block B · Room 214",
-      color: "yellow",
-    },
-    {
-      name: "Ms. Neha Iyer",
-      role: "Teaching Fellow",
-      status: "On Leave",
-      courses: "Machine Learning, Python Programming",
-      location: "Block C · Room 108",
-      color: "red",
-    },
-  ];
-
   const [searchMode, setSearchMode] = useState("name");
   const [searchText, setSearchText] = useState("");
 
-  const filteredFaculty = facultyList.filter((f) => {
-    const value = searchMode === "name" ? f.name : f.role;
+  const filteredFaculty = facultyProfiles.filter((f) => {
+    const value = searchMode === "name" ? f.name : f.designation;
 
     return value.toLowerCase().includes(searchText.toLowerCase());
   });
@@ -104,7 +79,7 @@ export default function SearchFaculty() {
               No faculty found for this search.
             </p>
           ) : (
-            filteredFaculty.map((faculty) => <FacultyCard key={faculty.name} {...faculty} />)
+            filteredFaculty.map((faculty) => <FacultyCard key={faculty.id} {...faculty} />)
           )}
         </section>
       </section>
@@ -112,7 +87,7 @@ export default function SearchFaculty() {
   );
 }
 
-function FacultyCard({ name, role, status, courses, location, color }) {
+function FacultyCard({ id, name, designation, status, courses, location, statusColor }) {
   const colorMap = {
     green: "bg-green-100 text-green-700",
     yellow: "bg-yellow-100 text-yellow-700",
@@ -123,12 +98,12 @@ function FacultyCard({ name, role, status, courses, location, color }) {
     <article className="rounded-lg border border-[#DCE3ED] bg-white p-5 shadow-sm transition hover:shadow-md">
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-[#1F3A5F]">{name}</h3>
-        <span className={`text-xs px-2 py-1 rounded-full ${colorMap[color]}`}>
+        <span className={`text-xs px-2 py-1 rounded-full ${colorMap[statusColor] ?? colorMap.green}`}>
           {status}
         </span>
       </div>
 
-      <p className="mb-1 text-sm text-[#2A4A75]">{role}</p>
+      <p className="mb-1 text-sm text-[#2A4A75]">{designation}</p>
 
       <p className="mb-1 text-xs text-[#5A6C7D]">
         <span className="font-medium text-[#1F3A5F]">Courses:</span>{" "}
@@ -139,6 +114,13 @@ function FacultyCard({ name, role, status, courses, location, color }) {
         <span className="font-medium text-[#1F3A5F]">Location:</span>{" "}
         {location}
       </p>
+
+      <Link
+        href={`/student/req/${id}`}
+        className="mt-4 inline-flex rounded-md bg-[#1F3A5F] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#2A4A75]"
+      >
+        Request Appointment
+      </Link>
     </article>
   );
 }

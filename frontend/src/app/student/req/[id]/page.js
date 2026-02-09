@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link";
 import { useState } from "react";
-import { getFacultyById, getFacultySlotsForNextDays } from "../facultyData";
+import { getFacultyById, getFacultySlotsForNextDays } from "../../../search/facultyData";
 import { useParams } from "next/navigation";
 import BackArrowButton from "@/components/BackArrowButton";
 
