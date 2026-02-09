@@ -1,9 +1,13 @@
 "use client";
 
-// Standalone admin page for managing support tickets raised by students and faculty.
-// should be wrapped by app/admin/layout.js later
+import { useState } from "react";
+
+// Standalone admin page.
+// Will be wrapped by app/admin/layout.js later.
 
 export default function ResolveTicketsPage() {
+  const [openTicketId, setOpenTicketId] = useState(null);
+
   const tickets = [
     {
       id: 1,
@@ -11,6 +15,8 @@ export default function ResolveTicketsPage() {
       raisedBy: "Student",
       name: "Muhammed Nubaise",
       status: "Open",
+      description:
+        "The student is unable to reschedule an already approved appointment. The system throws an error while saving changes.",
     },
     {
       id: 2,
@@ -18,6 +24,8 @@ export default function ResolveTicketsPage() {
       raisedBy: "Faculty",
       name: "Dr. Anil Kumar",
       status: "Open",
+      description:
+        "Faculty calendar is not syncing with the system. Newly added slots are not visible to students.",
     },
     {
       id: 3,
@@ -25,12 +33,14 @@ export default function ResolveTicketsPage() {
       raisedBy: "Student",
       name: "Ayesha Rahman",
       status: "Pending",
+      description:
+        "Two appointments were created for the same time slot due to multiple submission attempts.",
     },
   ];
 
   return (
     <main className="min-h-screen bg-[#F7F9FC] px-6 py-8">
-      {/* Page Header */}
+      {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-semibold text-[#1F3A5F]">
           Support Tickets
@@ -40,14 +50,14 @@ export default function ResolveTicketsPage() {
         </p>
       </div>
 
-      {/* Stats Row (matches dashboard style) */}
+      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <StatCard label="Open Tickets" value="7" />
         <StatCard label="Pending Review" value="3" />
         <StatCard label="Resolved Today" value="4" />
       </div>
 
-      {/* Tickets Table (card-style like dashboard) */}
+      {/* Tickets */}
       <section className="bg-white border border-[#E0E0E0] rounded-xl">
         <div className="px-6 py-4 border-b border-[#E0E0E0]">
           <h2 className="text-sm font-medium text-[#1F3A5F]">
@@ -57,27 +67,70 @@ export default function ResolveTicketsPage() {
 
         <div className="divide-y divide-[#E0E0E0]">
           {tickets.map((ticket) => (
-            <div
-              key={ticket.id}
-              className="px-6 py-4 flex items-center justify-between"
-            >
-              <div>
-                <p className="text-sm font-medium text-[#1F3A5F]">
-                  {ticket.title}
-                </p>
-                <p className="text-xs text-[#4A6FA5] mt-0.5">
-                  Raised by {ticket.raisedBy} · {ticket.name}
-                </p>
+            <div key={ticket.id} className="px-6 py-4">
+              {/* Row */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-[#1F3A5F]">
+                    {ticket.title}
+                  </p>
+                  <p className="text-xs text-[#4A6FA5] mt-0.5">
+                    Raised by {ticket.raisedBy} · {ticket.name}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <span className="text-xs px-2 py-1 rounded-full border border-[#E0E0E0] text-[#2A4A75]">
+                    {ticket.status}
+                  </span>
+
+                  <button
+                    className="text-xs font-medium text-[#1F3A5F] hover:underline cursor-pointer"
+                    onClick={() =>
+                      setOpenTicketId(
+                        openTicketId === ticket.id ? null : ticket.id
+                      )
+                    }
+                  >
+                    View
+                  </button>
+                </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <span className="text-xs px-2 py-1 rounded-full border border-[#E0E0E0] text-[#2A4A75]">
-                  {ticket.status}
-                </span>
-                <button className="text-xs font-medium text-[#1F3A5F] hover:underline">
-                  View
-                </button>
-              </div>
+              {/* Expanded View */}
+              {openTicketId === ticket.id && (
+                <div className="mt-4 p-4 bg-[#F7F9FC] border border-[#E0E0E0] rounded-lg">
+                  <p className="text-xs text-[#4A6FA5]">
+                    <span className="font-medium text-[#1F3A5F]">
+                      Description:
+                    </span>{" "}
+                    {ticket.description}
+                  </p>
+
+                  <div className="mt-4 flex gap-3">
+                    <button
+                      className="px-3 py-1.5 text-xs rounded-md bg-[#1F3A5F] text-white hover:bg-[#2A4A75] cursor-pointer"
+                      onClick={() => {
+                        // TODO: connect to backend resolve logic
+                      }}
+                    >
+                      Mark as Resolved
+                    </button>
+
+                    <button
+                      className="px-3 py-1.5 text-xs rounded-md border border-[#E0E0E0] text-[#1F3A5F] hover:bg-white cursor-pointer"
+                      onClick={() => {
+                        // TODO:
+                        // 1. Capture admin question
+                        // 2. Mark ticket as Pending
+                        // 3. Trigger external notification with message
+                      }}
+                    >
+                      Request Info
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -85,6 +138,7 @@ export default function ResolveTicketsPage() {
     </main>
   );
 }
+
 
 function StatCard({ label, value }) {
   return (
